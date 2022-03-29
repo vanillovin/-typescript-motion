@@ -1,4 +1,5 @@
-import { PageComponent } from './components/page.js';
+import { ImageComponent } from './components/page/item/image.js';
+import { PageComponent } from './components/page/page.js';
 
 // App 클래스는 전달받은 최고의 컨테이너 안에
 class App {
@@ -6,6 +7,10 @@ class App {
   constructor(appRoot: HTMLElement) {
     this.page = new PageComponent(); // 페이지라는 컴포넌트를 만들어서
     this.page.attachTo(appRoot); // 만들어진 페이지를 뺨 하고 붙여주는 일
+
+    // 생성자 안에는 아직 사용자에게 데이터를 받는 다이얼로그가 없으므로 임의
+    const image = new ImageComponent('Image Title', 'https://picsum.photos/600/300');
+    image.attachTo(appRoot, 'beforeend');
   }
 }
 
