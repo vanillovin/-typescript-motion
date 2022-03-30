@@ -2,27 +2,31 @@ import { VideoComponent } from './components/page/item/video.js';
 import { TodoComponent } from './components/page/item/todo.js';
 import { NoteComponent } from './components/page/item/note.js';
 import { ImageComponent } from './components/page/item/image.js';
-import { PageComponent } from './components/page/page.js';
+import { Composable, PageComponent } from './components/page/page.js';
+import { Component } from './components/component.js';
 
 // App 클래스는 전달받은 최고의 컨테이너 안에
 class App {
-  private readonly page: PageComponent;
+  private readonly page: Component & Composable;
   constructor(appRoot: HTMLElement) {
+    // 안에서 다른 어떤 다른 클래스를 만든다는 것은 사실 조금 위험함
+    // 이런 것들은 다 의존관계 주입(Dependency Injection)을 이용해서 
+    // 외부로부터 주입을 받는 것이 더 확장 가능하고 나중에 유닛 테스트하기에도 더 좋음
     this.page = new PageComponent(); // 페이지라는 컴포넌트를 만들어서
-    this.page.attachTo(appRoot); // 만들어진 페이지를 뺨 하고 붙여주는 일
+    this.page.attachTo(appRoot); // 만들어진 페이지를 appRoot에 추가해주고
 
     // 생성자 안에는 아직 사용자에게 데이터를 받는 다이얼로그가 없으므로 임의
     const image = new ImageComponent('Image Title', 'https://picsum.photos/600/300');
-    image.attachTo(appRoot, 'beforeend');
-
+    this.page.addChild(image); // <- image.attachTo(appRoot, 'beforeend');
+    
     const video = new VideoComponent('Video Title', 'https://youtu.be/SNBaIAvKxU4');
-    video.attachTo(appRoot, 'beforeend');
-
+    this.page.addChild(video); // <- video.attachTo(appRoot, 'beforeend');
+    
     const note = new NoteComponent('Note Title', 'Note Body');
-    note.attachTo(appRoot, 'beforeend');
-
+    this.page.addChild(note); // <- note.attachTo(appRoot, 'beforeend');
+    
     const todo = new TodoComponent('Todo Title', 'Todo Item');
-    todo.attachTo(appRoot, 'beforeend');
+    this.page.addChild(todo); // <- todo.attachTo(appRoot, 'beforeend');
   }
 }
 
