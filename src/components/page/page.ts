@@ -4,7 +4,11 @@ export interface Composable {
   addChild(child: Component): void;
 }
 
+type OnCloseListener = () => void;
+
 class PageItemComponent extends BaseComponent<HTMLElement> implements Composable {
+  private closeListener?: OnCloseListener;
+
   constructor() {
     super(`<li class="page-item">
             <section class="page-item__body"></section>
@@ -12,11 +16,20 @@ class PageItemComponent extends BaseComponent<HTMLElement> implements Composable
               <button class="close">&times;</button>
             </div>
           </li>`);
+    const closeBtn = this.element.querySelector('.close')! as HTMLButtonElement;
+    closeBtn.onclick = () => {
+      this.closeListener && this.closeListener();
+    };
   }
+  
   // 외부에서 어떤 아이템을 전달하냐에 따라서 위 section 안에 추가
   addChild(child: Component) {
     const container = this.element.querySelector('.page-item__body')! as HTMLElement;
     child.attachTo(container);
+  }
+
+  setOnCloseListener(listener: OnCloseListener) {
+    this.closeListener = listener;
   }
 }
 
@@ -31,5 +44,9 @@ export class PageComponent extends BaseComponent<HTMLUListElement> implements Co
     const item = new PageItemComponent();
     item.addChild(section);
     item.attachTo(this.element, 'beforeend');
+    // Close가 클릭이 되면 지금 여기 페이지로부터 제거 
+    item.setOnCloseListener(() => {
+      item.removeFrom(this.element);
+    });
   }
 }
