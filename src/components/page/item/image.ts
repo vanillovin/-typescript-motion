@@ -6,7 +6,7 @@ export class ImageComponent extends BaseComponent<HTMLElement> {
   constructor(title: string, url: string) {
     super(`<section class="image">
             <div class="image__holder"><img class="image__thumbnail"></div>
-            <h2 class="image__title"></h2>
+            <h2 class="page-item__title"></h2>
           </section>`);
 
     // 부모 클래스에서 this.element를 만든 다음 필요한 데이터를 업데이트
